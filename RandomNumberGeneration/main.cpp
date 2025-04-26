@@ -20,45 +20,43 @@ int main() {
 }
 
 void test_generator(LCG& gen) {
-    std::cout << "random in [0, " << LCG::rand_max << "]" << '\n';
+    std::cout << "Random in [0, " << LCG::rand_max << "]:" << '\n';
     for (int i = 0; i < 10; ++i) {
         std::cout << gen.rand_int() << '\n';
     }
 
     std::cout << '\n';
 
-    std::cout << "random in [0, 36]" << '\n';
+    std::cout << "Random in [0, 36]:" << '\n';
     for (int i = 0; i < 10; ++i) {
         std::cout << gen.rand_int(36 + 1) << '\n';
     }
 
     std::cout << '\n';
 
-    std::cout << "random in [0, 1)" << '\n';
+    std::cout << "Random in [0, 1):" << '\n';
     for (int i = 0; i < 10; ++i) {
         std::cout << gen.rand_double() << '\n';
     }
 }
 
 void show_distribution(LCG& gen) {
-    const int buckets = 20;
-    const int samples = 1'000'000;
+    constexpr int total_bins = 20;
+    constexpr int sample_size = 1'000'000;
 
-    std::vector<int> histogram(buckets, 0);
+    std::vector<int> histogram(total_bins, 0);
+    for (int i = 0; i < sample_size; ++i) {
+        uint32_t rand_value = gen.rand_int();
 
-    for (int i = 0; i < samples; ++i) {
-        uint32_t value = gen.rand_int();
+        int bin_index = static_cast<uint64_t>(rand_value) * total_bins / LCG::rand_max;
+        if (bin_index == total_bins)
+            bin_index--;
 
-        int bin = static_cast<uint64_t>(value) * buckets / LCG::rand_max;
-        if (bin == buckets)
-            bin = buckets - 1;
-
-        ++histogram[bin];
+        histogram[bin_index]++;
     }
 
-    for (int i = 0; i < buckets; i++) {
-        std::cout << std::setw(2) << i << ": "
-            << std::string(histogram[i] / (samples / 1000), '*')
-            << " (" << histogram[i] << ")\n";
+    std::cout << "Distribution:\n";
+    for (int& bin_value : histogram) {
+        std::cout << std::string(bin_value / 1000, '|') << '\n';
     }
 }

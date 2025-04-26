@@ -9,7 +9,7 @@ public:
     // [0, m).
     // NOTE: m = 2^k, so we don't care about an overflow in a * state (which leads to truncation of high-order bytes)
     // as the calculation of (% m) is equivalent to truncation by mask anyway.
-    uint32_t rand_int() { 
+    uint32_t rand_int() {
         state = (a * state + c) & 0x7fffffff; // (a * state + c) % m.
         return state;
     }
