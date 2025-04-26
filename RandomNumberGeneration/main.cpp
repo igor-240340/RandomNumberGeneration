@@ -56,7 +56,7 @@ void show_distribution(LCG& gen) {
     }
 
     std::cout << "Distribution:\n";
-    for (int& bin_value : histogram) {
+    for (const int& bin_value : histogram) {
         std::cout << std::string(bin_value / 1000, '|') << '\n';
     }
 }
